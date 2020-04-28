@@ -19,7 +19,7 @@ class Login extends Component{
     componentDidMount(){
        //verifica usuario logado
        if(firebase.getCurrent()){
-           return this.props.history.replace('dashboard');
+           return this.props.history.replace('/dashboard');
        } 
     }
 
@@ -34,18 +34,18 @@ class Login extends Component{
         
         try{
             //verificação erros no login
-            await firebase.login(email, password).catch((error)=> {
+            await firebase.login(email, password).catch((error)=>{
                 if(error.code === 'auth/user-not-found'){
                     alert('Este usuario não possui cadastro');
+                    return null;
                 }else{
                     alert('Codigo de erro: ' + error.code);
                     return null;
                 }
             });
             //tudo ok com login
-            this.props.history.replace('/dashboard')
-
-
+            this.props.history.replace('/dashboard');
+            
         }catch(error){
             alert(error.message);
         }        
