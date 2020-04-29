@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import firebase from '../../Firebase'
+import './dashboard.css';
 
 class Dashbord extends Component{
 
@@ -14,6 +15,7 @@ class Dashbord extends Component{
     }
 
     async componentDidMount(){
+        //se nao tiver usuario logado, manda para tela de login
         if(!firebase.getCurrent()){
             this.props.history.replace('/login');
             return null;
@@ -25,18 +27,23 @@ class Dashbord extends Component{
         })
     }
 
-    logout(){
-
+    logout = async () => {
+        await firebase.logout().catch((error)=>{
+            console.log(error);
+        });
+        //deslogado com sucesso
+        localStorage.removeItem("nome");
+        this.props.history.push('/');
     }
 
     render(){
         return(
             <div id="dashboard">
                 <div className="user-info">
-                 <h1>Ola {this.state.nome}</h1> 
+                 <h1>Olá {this.state.nome}</h1> 
                  <Link to="/dashboard/new">Novo Post</Link>   
                 </div> 
-                <p>Logado com: </p>
+                <p>Logado com: {firebase.getCurrent()} </p>
                 <button onClick={()=> this.logout()}>Deslogar</button>
             </div>
         );
