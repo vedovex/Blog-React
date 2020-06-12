@@ -23,8 +23,8 @@ class Dashbord extends Component{
 
         firebase.getUserName((info)=>{
             localStorage.nome = info.val().nome;
-            this.setState({nome: localStorage.nome});
-        })
+            this.setState({nome: localStorage.nome });
+          })
     }
 
     logout = async () => {
