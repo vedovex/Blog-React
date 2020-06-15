@@ -23,6 +23,7 @@ componentDidMount(){
 
       })
     });
+    state.posts.reverse();
     this.setState(state);
   });
 }

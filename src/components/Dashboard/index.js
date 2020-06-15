@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import firebase from '../../Firebase'
+import firebase from '../../Firebase';
 import './dashboard.css';
 
 class Dashbord extends Component{
@@ -15,17 +15,18 @@ class Dashbord extends Component{
     }
 
     async componentDidMount(){
-        //se nao tiver usuario logado, manda para tela de login
         if(!firebase.getCurrent()){
-            this.props.history.replace('/login');
-            return null;
+          this.props.history.replace('/login');
+          return null;
         }
-
+    
         firebase.getUserName((info)=>{
-            localStorage.nome = info.val().nome;
-            this.setState({nome: localStorage.nome });
-          })
-    }
+          localStorage.nome = info.val().nome;
+          this.setState({nome: localStorage.nome });
+        })
+    
+    
+      }
 
     logout = async () => {
         await firebase.logout().catch((error)=>{

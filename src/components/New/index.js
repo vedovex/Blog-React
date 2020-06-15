@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Link, withRouter} from 'react-router-dom';
+import firebase from '../../Firebase';
 
 import './new.css';
 
@@ -11,14 +12,41 @@ class New extends Component{
         this.state = {
             titulo: '',
             imagem: '',
-            descricao: ''
+            descricao: '',
+            alert: ''
         };
 
         this.cadastrar = this.cadastrar.bind(this);
     }
 
-    cadastrar(){
+    componentDidMount(){
+        //se nao tiver usuario logado, manda para tela de login
+        if(!firebase.getCurrent()){
+            this.props.history.replace('/');
+            return null;
+        }   
+    }
 
+    cadastrar = async (e) => {
+        e.preventDefault();
+
+        if(this.state.titulo !== '' && 
+            this.state.imagem !== '' && 
+            this.state.descricao !== '' && 
+            this.state.url !== ''){
+            let posts = firebase.app.ref('posts');
+            let chave = posts.push().key;
+                await posts.child(chave).set({
+                titulo: this.state.titulo,
+                imagem: this.state.imagem,
+                descricao: this.state.descricao,
+                Autor: localStorage.nome
+
+            });
+            this.props.history.push('/dashboard');
+        }else{
+            this.setState({alert: 'Preencha todos os campos'});
+        }
     }
 
     render(){
@@ -29,6 +57,7 @@ class New extends Component{
                 </header>
 
                 <form onSubmit={this.cadastrar} id="new-post">
+                    <span>{this.state.alert}</span>
                     <label>Titulo:</label><br/>
                     <input type="text" placeholder="Nome do post" value={this.state.titulo}
                     autoFocus onChange={(e) => this.setState({titulo: e.target.value})} /> <br/>
@@ -39,7 +68,7 @@ class New extends Component{
 
                     <label>Descrição:</label><br/>
                     <textarea type="text" placeholder="Descrição do post..." value={this.state.descricao}
-                    onChange={(e)=> this.setState({imagem: e.target.descricao})} /> <br/> 
+                    onChange={(e)=> this.setState({descricao: e.target.value})} /> <br/> 
 
                     <button type="submit">Cadastrar Post</button>          
 
